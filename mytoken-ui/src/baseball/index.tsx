@@ -18,6 +18,7 @@ const Baseball = (): JSX.Element => {
   const [allow, setAllow] = useState("0");
   const [random, setRandom] = useState("");
   const [input, setInput] = useState("");
+  const [done, setDone] = useState("");
   const web3 = new Web3(window.ethereum);
 
   const { baseballContract, baseballAddress, myTokenContract } = getContract();
@@ -73,6 +74,13 @@ const Baseball = (): JSX.Element => {
     }
   };
 
+  const donation = async () => {
+    try {
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <h1>야구⚾</h1>
@@ -99,6 +107,15 @@ const Baseball = (): JSX.Element => {
           onChange={(e) => setInput(e.target.value)}
         />
         <button onClick={gameStart}>게임 시작</button>
+      </div>
+      <div>
+        <input
+          type="text"
+          placeholder="기부하실 금액을 입력해주세요"
+          value={done}
+          onChange={(e) => setDone(e.target.value)}
+        />
+        <button onClick={donation}>기부</button>
       </div>
     </>
   );
