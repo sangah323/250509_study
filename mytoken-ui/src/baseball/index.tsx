@@ -106,28 +106,48 @@ const Baseball = (): JSX.Element => {
     }
   };
 
+  const withdrawToOwner = async () => {
+    try {
+      await baseballContract.methods.withdrawToOwner().send({ from: account });
+      await getState();
+      alert(`숫자 맞추기 실패! owner가 ${reward}MTK를 회수합니다.`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <h1>야구⚾</h1>
-      <div id="userInfo">
-        <h3>사용자 정보</h3>
-        <p>주소 : {account}</p>
-        <p>보유 토큰 : {balance} MTK</p>
-        <p>야구게임한테 권한 위임한 토큰 : {allow} MTK</p>
+
+      <div id="infoArea">
+        <div className="user-info">
+          <h3>사용자 정보</h3>
+          <p>주소 : {account}</p>
+          <p>보유 토큰 : {balance} MTK</p>
+          <p>야구게임한테 권한 위임한 토큰 : {allow} MTK</p>
+        </div>
+        <div className="game-info">
+          <h3>게임 정보</h3>
+          <p>보상 : {reward} MTK</p>
+          <p>시도 횟수 : {progress}</p>
+          <p>게임 상태 : {gameState === "0" ? "게임중" : "게임 종료"}</p>
+          <p>기부금 : {done} MTK</p>
+        </div>
       </div>
-      <div id="gameInfo">
-        <h3>게임 정보</h3>
-        <p>보상 : {reward} MTK</p>
-        <p>시도 횟수 : {progress}</p>
-        <p>게임 상태 : {gameState === "0" ? "게임중" : "게임 종료"}</p>
-        <p>기부금 : {done} MTK</p>
-      </div>
+
       <div id="gameArea">
         <div className="game-btn">
           <button onClick={connectWallet}>지갑 연결</button>
-          <button onClick={getState}>현재 상태</button>
           <button onClick={approve}>
             게임 참가 (권한 위임 후 가능 1000MTK)
+          </button>
+          <button onClick={getState}>현재 상태</button>
+          <button
+            onClick={withdrawToOwner}
+            disabled={!(gameState === "1" && parseInt(progress) >= 10)}
+          >
+            보상 회수
           </button>
         </div>
         <div className="game-box">
@@ -149,6 +169,7 @@ const Baseball = (): JSX.Element => {
           <button onClick={donation}>기부</button>
         </div>
       </div>
+
       <div id="managerArea">
         <h3>관리자</h3>
         <button onClick={result}>정답 확인</button>

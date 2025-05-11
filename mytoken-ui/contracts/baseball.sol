@@ -57,7 +57,7 @@ contract Baseball {
 
     function withdrawToOwner () public {
         require(msg.sender == owner, "Only owner");
-        require(gameState == GameState.playing || progress >= GAME_COUNT, "Game not Over-!");
+        require(gameState == GameState.gameOver && progress >= GAME_COUNT, "Game not Over-!");
         require(reward > 0, "Not reward");
 
         token.transfer(owner, reward);
