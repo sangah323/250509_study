@@ -1,6 +1,7 @@
 import { JSX, useState } from "react";
 import getContract from "./getContract";
-import Web3, { MissingGasError } from "web3";
+import Web3 from "web3";
+import "../index.css";
 
 declare global {
   interface Window {
@@ -117,7 +118,7 @@ const Baseball = (): JSX.Element => {
   };
 
   return (
-    <>
+    <div id="content">
       <h1>야구⚾</h1>
 
       <div id="infoArea">
@@ -137,6 +138,7 @@ const Baseball = (): JSX.Element => {
       </div>
 
       <div id="gameArea">
+        <h3>게임</h3>
         <div className="game-btn">
           <button onClick={connectWallet}>지갑 연결</button>
           <button onClick={approve}>
@@ -159,7 +161,7 @@ const Baseball = (): JSX.Element => {
           />
           <button onClick={gameStart}>게임 시작</button>
         </div>
-        <div className="service">
+        <div className="game-box">
           <input
             type="text"
             placeholder="기부하실 금액을 입력해주세요."
@@ -175,7 +177,7 @@ const Baseball = (): JSX.Element => {
         <button onClick={result}>정답 확인</button>
         <p>정답 : {random}</p>
       </div>
-    </>
+    </div>
   );
 };
 
