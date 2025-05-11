@@ -1,6 +1,6 @@
 import { JSX, useState } from "react";
 import getContract from "./getContract";
-import Web3 from "web3";
+import Web3, { MissingGasError } from "web3";
 
 declare global {
   interface Window {
@@ -90,42 +90,69 @@ const Baseball = (): JSX.Element => {
     }
   };
 
+  const result = async () => {
+    try {
+      const owner: string = await baseballContract.methods.owner().call();
+      if (account.toLowerCase() !== owner.toLowerCase()) {
+        alert("권한이 없습니다.");
+        return;
+      }
+      const random: string = await baseballContract.methods
+        .getRandom()
+        .call({ from: account });
+      setRandom(random);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <h1>야구⚾</h1>
-      <div>
+      <div id="userInfo">
         <h3>사용자 정보</h3>
         <p>주소 : {account}</p>
         <p>보유 토큰 : {balance} MTK</p>
         <p>야구게임한테 권한 위임한 토큰 : {allow} MTK</p>
       </div>
-      <div>
+      <div id="gameInfo">
         <h3>게임 정보</h3>
         <p>보상 : {reward} MTK</p>
         <p>시도 횟수 : {progress}</p>
         <p>게임 상태 : {gameState === "0" ? "게임중" : "게임 종료"}</p>
         <p>기부금 : {done} MTK</p>
       </div>
-      <button onClick={connectWallet}>지갑 연결</button>
-      <button onClick={getState}>현재 상태</button>
-      <button onClick={approve}>게임 참가 (권한 위임 후 가능 1000MTK)</button>
-      <div>
-        <input
-          type="text"
-          placeholder="숫자를 입력해주세요 (100~999)"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-        />
-        <button onClick={gameStart}>게임 시작</button>
+      <div id="gameArea">
+        <div className="game-btn">
+          <button onClick={connectWallet}>지갑 연결</button>
+          <button onClick={getState}>현재 상태</button>
+          <button onClick={approve}>
+            게임 참가 (권한 위임 후 가능 1000MTK)
+          </button>
+        </div>
+        <div className="game-box">
+          <input
+            type="text"
+            placeholder="숫자를 입력해주세요. (100~999)"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+          />
+          <button onClick={gameStart}>게임 시작</button>
+        </div>
+        <div className="service">
+          <input
+            type="text"
+            placeholder="기부하실 금액을 입력해주세요."
+            value={done}
+            onChange={(e) => setDone(e.target.value)}
+          />
+          <button onClick={donation}>기부</button>
+        </div>
       </div>
-      <div>
-        <input
-          type="text"
-          placeholder="기부하실 금액을 입력해주세요"
-          value={done}
-          onChange={(e) => setDone(e.target.value)}
-        />
-        <button onClick={donation}>기부</button>
+      <div id="managerArea">
+        <h3>관리자</h3>
+        <button onClick={result}>정답 확인</button>
+        <p>정답 : {random}</p>
       </div>
     </>
   );
