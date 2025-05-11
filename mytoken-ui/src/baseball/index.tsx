@@ -76,6 +76,15 @@ const Baseball = (): JSX.Element => {
 
   const donation = async () => {
     try {
+      const amount = web3.utils.toWei(done, "ether"); // MTK 단위로 변환
+      const owner = await baseballContract.methods.owner().call(); // owner 주소
+
+      // 참가자(account)가 owner(baseball contract)한테 done만큼 기부
+      await myTokenContract.methods
+        .transfer(owner, amount)
+        .send({ from: account });
+
+      alert(`${done} MTK 기부 완료`);
     } catch (error) {
       console.log(error);
     }
@@ -95,6 +104,7 @@ const Baseball = (): JSX.Element => {
         <p>보상 : {reward} MTK</p>
         <p>시도 횟수 : {progress}</p>
         <p>게임 상태 : {gameState === "0" ? "게임중" : "게임 종료"}</p>
+        <p>기부금 : {done} MTK</p>
       </div>
       <button onClick={connectWallet}>지갑 연결</button>
       <button onClick={getState}>현재 상태</button>
